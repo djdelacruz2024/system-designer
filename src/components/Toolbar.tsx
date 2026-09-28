@@ -12,8 +12,8 @@ const Toolbar = ({ onClear, onExport, onImport, onToggleProperties }: ToolbarPro
   const { isDrawingMode, isGroupDrawingMode, toggleDrawingMode, toggleGroupDrawingMode, clearAllLines, undoLastLine, selectedNodeIds, connectSelectedNodes, zoom, setZoom } = useStore()
   
   return (
-    <div className="h-16 bg-gradient-to-r from-slate-900 to-slate-800 border-b border-slate-700 flex items-center justify-between px-6 shadow-lg">
-      <div className="flex items-center gap-3">
+    <div className="h-16 shrink-0 bg-gradient-to-r from-slate-900 to-slate-800 border-b border-slate-700 flex items-center justify-between gap-4 px-6 shadow-lg">
+      <div className="flex items-center gap-3 shrink-0 whitespace-nowrap">
         <div className="flex flex-col">
           <h1 className="text-2xl font-extrabold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent tracking-tight">
             System Designer
@@ -22,7 +22,7 @@ const Toolbar = ({ onClear, onExport, onImport, onToggleProperties }: ToolbarPro
         </div>
       </div>
       
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 min-w-0 overflow-x-auto whitespace-nowrap [&>*]:shrink-0">
         <button
           onClick={toggleDrawingMode}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border ${
@@ -33,7 +33,7 @@ const Toolbar = ({ onClear, onExport, onImport, onToggleProperties }: ToolbarPro
           title={isDrawingMode ? 'Exit drawing mode' : 'Enter drawing mode'}
         >
           <Pencil size={16} />
-          {isDrawingMode ? 'Drawing' : 'Draw'}
+          <span className="hidden min-[2000px]:inline">{isDrawingMode ? 'Drawing' : 'Draw'}</span>
         </button>
         
         <button
@@ -46,25 +46,25 @@ const Toolbar = ({ onClear, onExport, onImport, onToggleProperties }: ToolbarPro
           title={isGroupDrawingMode ? 'Exit group drawing mode' : 'Draw group/cluster'}
         >
           <Box size={16} />
-          {isGroupDrawingMode ? 'Grouping' : 'Group'}
+          <span className="hidden min-[2000px]:inline">{isGroupDrawingMode ? 'Grouping' : 'Group'}</span>
         </button>
         
         <button
           onClick={undoLastLine}
-          className="flex items-center gap-2 px-4 py-2 bg-slate-800/50 border-slate-600 hover:bg-slate-700/50 rounded-lg text-slate-300 hover:text-white text-sm font-medium transition-all duration-200"
+          className="flex items-center gap-2 px-3 py-2 bg-slate-800/50 border-slate-600 hover:bg-slate-700/50 rounded-lg text-slate-300 hover:text-white text-sm font-medium transition-all duration-200"
           title="Undo last line"
         >
           <Undo size={16} />
-          Undo
+          <span className="hidden min-[2000px]:inline">Undo</span>
         </button>
         
         <button
           onClick={clearAllLines}
-          className="flex items-center gap-2 px-4 py-2 bg-slate-800/50 border-slate-600 hover:bg-slate-700/50 rounded-lg text-slate-300 hover:text-white text-sm font-medium transition-all duration-200"
+          className="flex items-center gap-2 px-3 py-2 bg-slate-800/50 border-slate-600 hover:bg-slate-700/50 rounded-lg text-slate-300 hover:text-white text-sm font-medium transition-all duration-200"
           title="Clear all drawn lines"
         >
           <Eraser size={16} />
-          Clear Lines
+          <span className="hidden min-[2000px]:inline">Clear Lines</span>
         </button>
         
         <button
@@ -78,7 +78,7 @@ const Toolbar = ({ onClear, onExport, onImport, onToggleProperties }: ToolbarPro
           title="Connect selected components (first selected connects to all others)"
         >
           <Link size={16} />
-          Connect
+          <span className="hidden min-[2000px]:inline">Connect</span>
         </button>
         
         <div className="w-px h-6 bg-slate-600 mx-2" />
@@ -115,29 +115,29 @@ const Toolbar = ({ onClear, onExport, onImport, onToggleProperties }: ToolbarPro
         
         <button
           onClick={onImport}
-          className="flex items-center gap-2 px-4 py-2 bg-slate-800/50 border-slate-600 hover:bg-slate-700/50 rounded-lg text-slate-300 hover:text-white text-sm font-medium transition-all duration-200"
+          className="flex items-center gap-2 px-3 py-2 bg-slate-800/50 border-slate-600 hover:bg-slate-700/50 rounded-lg text-slate-300 hover:text-white text-sm font-medium transition-all duration-200"
           title="Import design"
         >
           <Upload size={16} />
-          Import
+          <span className="hidden min-[2000px]:inline">Import</span>
         </button>
         
         <button
           onClick={onExport}
-          className="flex items-center gap-2 px-4 py-2 bg-slate-800/50 border-slate-600 hover:bg-slate-700/50 rounded-lg text-slate-300 hover:text-white text-sm font-medium transition-all duration-200"
+          className="flex items-center gap-2 px-3 py-2 bg-slate-800/50 border-slate-600 hover:bg-slate-700/50 rounded-lg text-slate-300 hover:text-white text-sm font-medium transition-all duration-200"
           title="Export design"
         >
           <Download size={16} />
-          Export
+          <span className="hidden min-[2000px]:inline">Export</span>
         </button>
         
         <button
           onClick={onClear}
-          className="flex items-center gap-2 px-4 py-2 bg-red-500/10 border-red-500/30 hover:bg-red-500/20 rounded-lg text-red-400 text-sm font-medium transition-all duration-200"
+          className="flex items-center gap-2 px-3 py-2 bg-red-500/10 border-red-500/30 hover:bg-red-500/20 rounded-lg text-red-400 text-sm font-medium transition-all duration-200"
           title="Clear canvas"
         >
           <Trash2 size={16} />
-          Clear
+          <span className="hidden min-[2000px]:inline">Clear</span>
         </button>
         
         <div className="w-px h-6 bg-slate-600 mx-2" />

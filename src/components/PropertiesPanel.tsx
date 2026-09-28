@@ -8,7 +8,7 @@ const PropertiesPanel = () => {
   
   if (!selectedNode) {
     return (
-      <div className="w-72 bg-gray-900 border-l border-gray-700 p-4">
+      <div className="w-72 shrink-0 bg-gray-900 border-l border-gray-700 p-4">
         <h3 className="text-lg font-bold text-white mb-4">Properties</h3>
         <p className="text-sm text-gray-400">Select a component to view its properties</p>
       </div>
@@ -16,7 +16,7 @@ const PropertiesPanel = () => {
   }
   
   return (
-    <div className="w-72 bg-gray-900 border-l border-gray-700 p-4 flex flex-col">
+    <div className="w-72 shrink-0 bg-gray-900 border-l border-gray-700 p-4 flex flex-col">
       <h3 className="text-lg font-bold text-white mb-4">Properties</h3>
       
       <div className="space-y-4 flex-1">

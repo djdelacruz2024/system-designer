@@ -266,8 +266,9 @@ const Sidebar = () => {
     return filtered
   }, [searchQuery])
   
-  const handleDragStart = (e: React.DragEvent, type: NodeType) => {
+  const handleDragStart = (e: React.DragEvent, type: NodeType, label: string) => {
     e.dataTransfer.setData('nodeType', type)
+    e.dataTransfer.setData('nodeLabel', label)
   }
   
   const handleAddNode = (type: NodeType, label: string) => {
@@ -301,9 +302,6 @@ const Sidebar = () => {
         isTemplate: true
       }))
       
-      console.log('Loading template:', template.name)
-      console.log('New nodes:', newNodes)
-      console.log('New connections:', newConnections)
       
       clearAll()
       loadDesign(newNodes, newConnections)
@@ -311,7 +309,7 @@ const Sidebar = () => {
   }
   
   return (
-    <div className="w-72 bg-slate-900 border-r border-slate-700 flex flex-col">
+    <div className="w-72 shrink-0 bg-slate-900 border-r border-slate-700 flex flex-col">
       {/* Tabs */}
       <div className="flex border-b border-slate-700">
         <button
@@ -376,7 +374,7 @@ const Sidebar = () => {
                       <div
                         key={type}
                         draggable
-                        onDragStart={(e) => handleDragStart(e, type)}
+                        onDragStart={(e) => handleDragStart(e, type, label)}
                         onClick={() => handleAddNode(type, label)}
                         className="flex items-center gap-3 p-3 bg-slate-800/30 rounded-lg hover:bg-slate-800/50 cursor-grab active:cursor-grabbing transition-all duration-200 border border-slate-700 hover:border-slate-600"
                       >

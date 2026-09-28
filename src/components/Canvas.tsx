@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useRef, useState } from 'react'
-import { useStore, Node, ConnectorPosition } from '../store/useStore'
+import { useStore, Node, NodeType, ConnectorPosition } from '../store/useStore'
 import NodeComponent from './NodeComponent'
 import ConnectionComponent from './Connection'
 
@@ -47,9 +47,31 @@ const Canvas = forwardRef<HTMLDivElement>((_, ref) => {
     updateGroupDrawing,
     endGroupDrawing,
     deleteGroup,
-    updateGroup
+    updateGroup,
+    addNode
   } = useStore()
-  
+
+  // Components dragged from the sidebar are dropped centered under the cursor
+  const handleDrop = (e: React.DragEvent) => {
+    const type = e.dataTransfer.getData('nodeType') as NodeType
+    const rect = canvasRef.current?.getBoundingClientRect()
+    if (!type || !rect || !canvasRef.current) return
+    e.preventDefault()
+    const x = (e.clientX - rect.left + canvasRef.current.scrollLeft) / zoom
+    const y = (e.clientY - rect.top + canvasRef.current.scrollTop) / zoom
+    const width = 120
+    const height = 80
+    addNode({
+      id: `node-${Date.now()}`,
+      type,
+      x: x - width / 2,
+      y: y - height / 2,
+      label: e.dataTransfer.getData('nodeLabel') || type,
+      width,
+      height
+    })
+  }
+
   const getConnectorPosition = (node: Node, position: ConnectorPosition) => {
     switch (position) {
       case 'top':
@@ -125,6 +147,11 @@ const Canvas = forwardRef<HTMLDivElement>((_, ref) => {
   }
   
   const handleKeyDown = (e: KeyboardEvent) => {
+    // Let text fields (e.g. the Properties panel) handle their own keys
+    const target = e.target as HTMLElement | null
+    if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
+      return
+    }
     if (e.key === 'Delete' || e.key === 'Backspace') {
       if (selectedGroupId) {
         deleteGroup(selectedGroupId)
@@ -156,10 +183,11 @@ const Canvas = forwardRef<HTMLDivElement>((_, ref) => {
     }
   }
   
+  // Re-subscribe on every render so the handler always sees current state
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [selectedNodeIds, isConnecting, selectedGroupId, isGroupDrawingMode])
+  })
   
   // Auto-scale groups to fit nodes inside them
   useEffect(() => {
@@ -288,6 +316,8 @@ const Canvas = forwardRef<HTMLDivElement>((_, ref) => {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={handleDrop}
       onClick={(e) => {
         if (e.target === canvasRef.current && !isDrawingMode) {
           selectNode(null)
@@ -379,7 +409,7 @@ const Canvas = forwardRef<HTMLDivElement>((_, ref) => {
           const isSelected = selectedConnectionId === conn.id
           
           return (
-            <g style={{ pointerEvents: 'auto' }}>
+            <g key={conn.id} style={{ pointerEvents: 'auto' }}>
               <ConnectionComponent
                 fromX={fromPos.x}
                 fromY={fromPos.y}

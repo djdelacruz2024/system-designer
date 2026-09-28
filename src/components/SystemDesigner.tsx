@@ -9,24 +9,37 @@ const SystemDesigner = () => {
   const canvasRef = useRef<HTMLDivElement>(null)
   const [showProperties, setShowProperties] = useState(true)
   
-  const { nodes, connections, clearAll, loadDesign } = useStore()
-  
+  const { nodes, connections, groups, drawnLines, clearAll, loadDesign } = useStore()
+
+  // Load a saved/imported design; throws if the data isn't a design
+  const applyDesign = (json: string) => {
+    const design = JSON.parse(json)
+    if (!Array.isArray(design?.nodes) || !Array.isArray(design?.connections)) {
+      throw new Error('Not a System Designer file')
+    }
+    loadDesign(
+      design.nodes,
+      design.connections,
+      Array.isArray(design.groups) ? design.groups : [],
+      Array.isArray(design.drawnLines) ? design.drawnLines : []
+    )
+  }
+
   // Auto-save to localStorage
   useEffect(() => {
     const saved = localStorage.getItem('system-design')
     if (saved) {
       try {
-        const { nodes: savedNodes, connections: savedConnections } = JSON.parse(saved)
-        loadDesign(savedNodes, savedConnections)
+        applyDesign(saved)
       } catch (e) {
         console.error('Failed to load saved design', e)
       }
     }
   }, [loadDesign])
-  
+
   useEffect(() => {
-    localStorage.setItem('system-design', JSON.stringify({ nodes, connections }))
-  }, [nodes, connections])
+    localStorage.setItem('system-design', JSON.stringify({ nodes, connections, groups, drawnLines }))
+  }, [nodes, connections, groups, drawnLines])
   
   const handleClear = () => {
     if (confirm('Are you sure you want to clear the entire design?')) {
@@ -35,7 +48,7 @@ const SystemDesigner = () => {
   }
   
   const handleExport = () => {
-    const data = JSON.stringify({ nodes, connections }, null, 2)
+    const data = JSON.stringify({ nodes, connections, groups, drawnLines }, null, 2)
     const blob = new Blob([data], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -55,10 +68,9 @@ const SystemDesigner = () => {
         const reader = new FileReader()
         reader.onload = (e) => {
           try {
-            const { nodes: importedNodes, connections: importedConnections } = JSON.parse(e.target?.result as string)
-            loadDesign(importedNodes, importedConnections)
+            applyDesign(e.target?.result as string)
           } catch (err) {
-            alert('Failed to import file')
+            alert('Failed to import file: it is not a valid System Designer export.')
           }
         }
         reader.readAsText(file)
@@ -70,7 +82,7 @@ const SystemDesigner = () => {
   return (
     <div className="flex h-screen bg-gray-900 text-white">
       <Sidebar />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 min-w-0 flex flex-col">
         <Toolbar 
           onClear={handleClear}
           onExport={handleExport}

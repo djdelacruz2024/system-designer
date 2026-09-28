@@ -38,6 +38,11 @@ export interface Connection {
   isTemplate?: boolean
 }
 
+export interface DrawnLine {
+  start: { x: number; y: number }
+  end: { x: number; y: number }
+}
+
 export interface Group {
   id: string
   x: number
@@ -67,7 +72,7 @@ interface DesignerStore {
   isDrawing: boolean
   drawingStart: { x: number; y: number } | null
   drawingEnd: { x: number; y: number } | null
-  drawnLines: { start: { x: number; y: number }; end: { x: number; y: number } }[]
+  drawnLines: DrawnLine[]
   groupDrawingStart: { x: number; y: number } | null
   groupDrawingEnd: { x: number; y: number } | null
   
@@ -103,7 +108,7 @@ interface DesignerStore {
   updateGroup: (id: string, updates: Partial<Group>) => void
   
   clearAll: () => void
-  loadDesign: (nodes: Node[], connections: Connection[]) => void
+  loadDesign: (nodes: Node[], connections: Connection[], groups?: Group[], drawnLines?: DrawnLine[]) => void
 }
 
 export const useStore = create<DesignerStore>((set) => ({
@@ -275,15 +280,21 @@ export const useStore = create<DesignerStore>((set) => ({
   clearAll: () => set({
     nodes: [],
     connections: [],
+    groups: [],
+    drawnLines: [],
     selectedNodeIds: [],
-    selectedConnectionId: null
+    selectedConnectionId: null,
+    selectedGroupId: null
   }),
-  
-  loadDesign: (nodes, connections) => set({
+
+  loadDesign: (nodes, connections, groups = [], drawnLines = []) => set({
     nodes,
     connections,
+    groups,
+    drawnLines,
     selectedNodeIds: [],
-    selectedConnectionId: null
+    selectedConnectionId: null,
+    selectedGroupId: null
   }),
   
   toggleDrawingMode: () => set((state) => ({
