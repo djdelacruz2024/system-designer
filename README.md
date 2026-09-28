@@ -1,136 +1,126 @@
 # System Designer
 
-An interactive web-based system design tool for creating and visualizing system architecture diagrams.
+An interactive, browser-based canvas for sketching system architecture diagrams. Pick from 80+ components (from load balancers and databases to LLMs, vector stores, and Kubernetes), wire them together, or start from one of 23 ready-made architecture templates.
+
+![System Designer showing the Enterprise Multi-Agent System template](docs/screenshot.png)
+
+Everything runs client-side: no backend and no account. Your design auto-saves to the browser and can be exported to JSON.
 
 ## Features
 
-- **Interactive Canvas**: Drag and drop components onto a grid-based canvas
-- **Component Library**: 8 different component types including:
-  - Database
-  - Service (Microservice)
-  - API Gateway
-  - Load Balancer
-  - Cache (Redis/Memcached)
-  - Message Queue
-  - Client (Web/Mobile)
-  - Server
-- **Connections**: Connect components with visual lines
-- **Properties Panel**: Edit component properties (label, position, size)
-- **Save/Load**: Auto-saves to localStorage, export/import JSON files
-- **Keyboard Shortcuts**: Delete (remove selected), Escape (cancel selection)
-- **Modern UI**: Built with React, TypeScript, and TailwindCSS
+- **80+ components in 15 categories**: AI & ML, MLOps, Data Science, Databases, DevOps, Security, Networking, Cloud, Infrastructure, Mobile, IoT, Blockchain, Testing, Monitoring, and Client. The component list is searchable.
+- **23 architecture templates**: RAG pipeline, multi-agent systems, microservices, event-driven, load-balanced, MLOps training, big-data pipelines, Kubernetes, IoT, blockchain, monitoring stacks, and several larger "enterprise" variants.
+- **Connections**: Shift-click to select several components, then press **Connect** to link the first one to the rest. Routes pick the nearest sides automatically.
+- **Groups**: draw dashed boundaries around related components. Groups resize to fit the components inside them.
+- **Freehand lines**: sketch annotations in Draw mode, with undo.
+- **Zoom**: toolbar buttons, the mouse wheel, or the keyboard.
+- **Properties panel**: rename, move, and resize the selected component.
+- **Save and share**: auto-saves to `localStorage`; export and import designs as JSON.
 
-## Getting Started
+## Getting started
 
-### Prerequisites
+Requires **Node.js 20.19+** (or 22.12+).
 
-- Node.js (v16 or higher)
-- npm or yarn
-
-### Installation
-
-1. Navigate to the project directory:
 ```bash
+git clone https://github.com/djdelacruz2024/system-designer.git
 cd system-designer
-```
-
-2. Install dependencies:
-```bash
 npm install
-```
-
-### Running the Application
-
-Start the development server:
-```bash
 npm run dev
 ```
 
-Open your browser and navigate to `http://localhost:5173`
+Then open http://localhost:5173.
 
-### Building for Production
+On Windows you can also double-click `install.bat`, then `start.bat`.
+
+### Production build
 
 ```bash
-npm run build
+npm run build     # type-checks and outputs static files to dist/
+npm run preview   # serves the build locally
 ```
 
-The built files will be in the `dist` directory.
+`dist/` is a plain static site, so you can host it on GitHub Pages, Netlify, Vercel, or any static file server.
 
-## Usage
+## Using the editor
 
-1. **Add Components**: Click on a component in the sidebar or drag it onto the canvas
-2. **Move Components**: Click and drag components to reposition them
-3. **Connect Components**: Click the blue dot on the right side of a component to start a connection, then click another component to complete it
-4. **Edit Properties**: Click a component to select it, then edit its properties in the right panel
-5. **Delete**: Select a component and press Delete, or use the delete button in the properties panel
-6. **Export**: Click the Export button to save your design as a JSON file
-7. **Import**: Click the Import button to load a previously exported design
-8. **Clear**: Click the Clear button to remove all components (requires confirmation)
+| Action | How |
+| --- | --- |
+| Add a component | Click it in the sidebar, or drag it onto the canvas |
+| Load a template | **Templates** tab, then click a template (replaces the current design) |
+| Move a component | Drag it |
+| Select several | Shift-click |
+| Connect components | Select two or more, then click **Connect** |
+| Delete a connection | Hover its midpoint and click **×** |
+| Edit a component | Select it and use the **Properties** panel |
+| Group components | Click **Group**, then drag a rectangle around them |
+| Annotate | Click **Draw**, then drag to draw lines (**Undo** and **Clear Lines** available) |
+| Save / load a file | **Export** / **Import** (JSON) |
 
-## Keyboard Shortcuts
+On screens narrower than about 2000px the toolbar shows icons only; hover a button to see its name.
 
-- `Delete` / `Backspace`: Remove selected component
-- `Escape`: Cancel selection or connection
+### Keyboard shortcuts
 
-## Tech Stack
+| Key | Action |
+| --- | --- |
+| `Delete` / `Backspace` | Delete the selected component(s) or group |
+| `Esc` | Clear the selection and cancel connect or group mode |
+| `+` / `-` | Zoom in / out |
+| `0` | Reset zoom to 100% |
 
-- **React 18**: UI framework
-- **TypeScript**: Type safety
-- **TailwindCSS**: Styling
-- **Zustand**: State management
-- **Lucide React**: Icons
-- **Vite**: Build tool
+## Export format
 
-## Project Structure
+Exports are plain JSON, so they're easy to version-control or generate:
 
-```
-system-designer/
-├── src/
-│   ├── components/
-│   │   ├── Canvas.tsx          # Main canvas area
-│   │   ├── NodeComponent.tsx   # Individual component rendering
-│   │   ├── Connection.tsx      # Connection line rendering
-│   │   ├── Sidebar.tsx         # Component library
-│   │   ├── Toolbar.tsx         # Top toolbar
-│   │   ├── PropertiesPanel.tsx # Right panel for editing
-│   │   └── SystemDesigner.tsx  # Main app component
-│   ├── store/
-│   │   └── useStore.ts         # Zustand state management
-│   ├── App.tsx                 # Root component
-│   ├── main.tsx                # Entry point
-│   └── index.css               # Global styles
-├── package.json
-├── tsconfig.json
-├── tailwind.config.js
-└── vite.config.ts
+```json
+{
+  "nodes": [
+    { "id": "node-1", "type": "api", "label": "API Gateway", "x": 100, "y": 200, "width": 120, "height": 80 }
+  ],
+  "connections": [
+    { "id": "conn-1", "fromNodeId": "node-1", "toNodeId": "node-2", "fromPosition": "right", "toPosition": "left" }
+  ],
+  "groups": [],
+  "drawnLines": []
+}
 ```
 
-## Future Enhancements
+Files exported by older versions (without `groups` and `drawnLines`) still import fine.
 
-This is an endless project with many potential improvements:
+## Tech stack
 
-- [ ] Zoom and pan functionality
-- [ ] Undo/redo history
-- [ ] Component grouping
-- [ ] More component types (CDN, Firewall, etc.)
-- [ ] Connection labels and types
+[React 18](https://react.dev) · [TypeScript](https://www.typescriptlang.org) · [Vite](https://vite.dev) · [Tailwind CSS](https://tailwindcss.com) · [Zustand](https://zustand.docs.pmnd.rs) (state) · [Lucide](https://lucide.dev) (icons)
+
+## Project structure
+
+```
+src/
+├── components/
+│   ├── SystemDesigner.tsx     # Layout, auto-save, import/export
+│   ├── Canvas.tsx             # Canvas: zoom, drag/drop, groups, drawing, shortcuts
+│   ├── NodeComponent.tsx      # A single component box (icon + colors per type)
+│   ├── Connection.tsx         # Routed connection lines
+│   ├── Sidebar.tsx            # Component library and templates
+│   ├── Toolbar.tsx            # Top toolbar
+│   └── PropertiesPanel.tsx    # Edit the selected component
+├── data/templates.ts          # The 23 architecture templates
+└── store/useStore.ts          # Zustand store: nodes, connections, groups, modes
+```
+
+### Adding a component type
+
+1. Add the type name to `NodeType` in `src/store/useStore.ts`.
+2. Give it an icon and colors in `iconMap` and `colorMap` in `src/components/NodeComponent.tsx`.
+3. List it in one or more categories in `src/components/Sidebar.tsx`.
+
+## Roadmap
+
+- [ ] Undo/redo for all edits (currently only freehand lines)
+- [ ] Connection labels and selection
 - [ ] Export to PNG/SVG
-- [ ] Templates for common architectures
-- [ ] Real-time collaboration
-- [ ] Cloud storage integration
-- [ ] Component validation and error checking
-- [ ] Performance metrics visualization
-- [ ] Auto-layout algorithms
-- [ ] Dark/light theme toggle
-- [ ] Custom component creation
-- [ ] Keyboard shortcuts for all actions
-- [ ] Search and filter components
-- [ ] Layer management
-- [ ] Snap-to-grid toggle
-- [ ] Connection routing options
-- [ ] Component duplication
-- [ ] Copy/paste functionality
+- [ ] Copy/paste and duplicate
+- [ ] Snap-to-grid and auto-layout
+- [ ] Light theme
 
 ## License
 
-MIT
+[MIT](LICENSE)
