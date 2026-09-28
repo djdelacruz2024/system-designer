@@ -1,11 +1,10 @@
 import { forwardRef, useEffect, useRef, useState } from 'react'
 import { useStore, Node, ConnectorPosition } from '../store/useStore'
 import NodeComponent from './NodeComponent'
-import Connection from './Connection'
 import ConnectionComponent from './Connection'
 
 const Canvas = forwardRef<HTMLDivElement>((_, ref) => {
-  const canvasRef = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLDivElement | null>(null)
   const drawingCanvasRef = useRef<HTMLCanvasElement>(null)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [canvasSize, setCanvasSize] = useState({ width: 5000, height: 5000 })
@@ -33,12 +32,10 @@ const Canvas = forwardRef<HTMLDivElement>((_, ref) => {
     setZoom,
     selectNode,
     clearSelection,
-    selectConnection,
     selectGroup,
     startDrag,
     dragNode,
     endDrag,
-    startConnecting,
     endConnecting,
     deleteNode,
     deleteConnection,

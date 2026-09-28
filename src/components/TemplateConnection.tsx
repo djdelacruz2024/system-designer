@@ -55,16 +55,14 @@ const TemplateConnection = ({ fromX, fromY, toX, toY }: TemplateConnectionProps)
   
   return (
     <g>
-      {/* Simple red line for testing */}
-      <line
-        x1={fromX}
-        y1={fromY}
-        x2={toX}
-        y2={toY}
+      <path
+        d={path}
+        fill="none"
         stroke="#ef4444"
         strokeWidth={4}
         strokeDasharray="8,4"
       />
+      <polygon points={arrowPoints} fill="#ef4444" />
     </g>
   )
 }

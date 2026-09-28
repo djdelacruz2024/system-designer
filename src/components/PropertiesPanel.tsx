@@ -1,8 +1,10 @@
 import { useStore } from '../store/useStore'
 
 const PropertiesPanel = () => {
-  const { nodes, selectedNodeId, updateNode, deleteNode } = useStore()
-  const selectedNode = nodes.find(n => n.id === selectedNodeId)
+  const { nodes, selectedNodeIds, updateNode, deleteNode } = useStore()
+  const selectedNode = selectedNodeIds.length === 1
+    ? nodes.find(n => n.id === selectedNodeIds[0])
+    : undefined
   
   if (!selectedNode) {
     return (
